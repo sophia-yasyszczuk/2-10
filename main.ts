@@ -5,41 +5,46 @@
  * This program ...
 */
 
-// Assume 'light' is a variable reading from a sensor (0-255)
-let lightValue: number = input.lightLevel();
+// Initialize the strip on Pin P1 with 4 pixels
 let pixels = neopixel.create(DigitalPin.P1, 4, NeoPixelMode.RGB);
+let lightValue: number = 0;
 
 forever(function () {
+    // 1. Read the current light level
     lightValue = input.lightLevel();
 
-    // Turn all pixels off initially to reset the state
+    // 2. Clear the buffer (turns them 'off' in memory)
     pixels.clear();
 
-    // Condition 1: <= 51 (0 Neopixels)
+    // 3. Condition 1: <= 51 (No pixels)
     if (lightValue <= 51) {
-        // No pixels are set, clear() already handled this
+        // Explicitly show nothing
+        pixels.clear();
     }
 
-    // Condition 2: > 52 (At least 1 Neopixel)
-    if (lightValue > 52) {
+    // 4. Condition 2: > 51 (Fixes the gap at 52)
+    if (lightValue > 51) {
         pixels.setPixelColor(0, NeoPixelColors.White);
     }
 
-    // Condition 3: > 104 (At least 2 Neopixels)
+    // 5. Condition 3: > 104
     if (lightValue > 104) {
         pixels.setPixelColor(1, NeoPixelColors.White);
     }
 
-    // Condition 4: > 156 (At least 3 Neopixels)
+    // 6. Condition 4: > 156
     if (lightValue > 156) {
         pixels.setPixelColor(2, NeoPixelColors.White);
     }
 
-    // Condition 5: > 208 (At least 4 Neopixels)
+    // 7. Condition 5: > 208
     if (lightValue > 208) {
         pixels.setPixelColor(3, NeoPixelColors.White);
     }
 
+    // 8. Push the memory changes to the actual LEDs
     pixels.show();
-    pause(100); // Small pause to prevent flickering
+
+    // 9. Breathable delay
+    pause(100);
 })
